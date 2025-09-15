@@ -41,3 +41,13 @@ app.post("/usuarios", async (req, res) =>{
         })
     )
 });
+
+// Listar todos os usuários
+app.get("/usuarios", (req, res) => {
+    db.all(`SELECT id, nome, email FROM usuarios`, [], (err, rows) => {
+        res.json(rows)
+    })
+})
+
+// Iniciar o server
+app.listen(PORT, () => console.log(`Servidor rodando em http://localhost:${PORT}`))
