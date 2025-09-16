@@ -52,5 +52,39 @@ app.get("/usuarios", (req, res) => {
     })
 })
 
+// Selecionar um usuário
+app.get("/usuarios/:id", (req, res) => {
+    let idUsuario = req.params.id;
+
+    db.get(`SELECT id, nome, email FROM usuarios 
+    WHERE id = ?`,
+    [idUsuario], (err, result) => {
+        if(result){
+            res.json(result)
+        } else {
+            res.status(404).json({
+                "message" : "Usuário não encontrado."
+            })
+        }
+    })
+})
+
+// Deletar usuário
+app.delete("/usuarios/:id", (req, res) => {
+    let idUsuario = req.params.id
+
+    db.run(`DELETE FROM usuarios WHERE id = ?`, [idUsuario], function() {
+        if(this.changes === 0){
+            return res.status(404).json({
+                "message" : "Usuário não encontrado."
+            })
+        }
+
+        res.json({
+            "message" : "Usuário deletado."
+        })
+    })
+})
+
 // Iniciar o server
 app.listen(PORT, () => console.log(`Servidor rodando em http://localhost:${PORT}`))
