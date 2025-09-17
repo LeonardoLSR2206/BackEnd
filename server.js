@@ -22,6 +22,12 @@ db.run(`CREATE TABLE IF NOT EXISTS usuarios (
     )
 `);
 
+app.get("/", async (req, res) => {
+    res.json({
+        "teste" : "ok"
+    })
+})
+
 // Cadastrar usuário
 app.post("/usuarios", async (req, res) => {
     console.log(req.body);
@@ -73,17 +79,38 @@ app.get("/usuarios/:id", (req, res) => {
 app.delete("/usuarios/:id", (req, res) => {
     let idUsuario = req.params.id
 
-    db.run(`DELETE FROM usuarios WHERE id = ?`, [idUsuario], function() {
+    db.run(`DELETE FROM usuarios WHERE id = ?`, 
+    [idUsuario], function() {
+        // Verifica 
         if(this.changes === 0){
             return res.status(404).json({
                 "message" : "Usuário não encontrado."
             })
-        }
-
-        res.json({
+        } else {
+            res.json({
             "message" : "Usuário deletado."
-        })
+            })
+        }
     })
+})
+
+// Editar usuário
+app.put("/usuarios/:id", async (req, res) => {
+    let idUsuario = req.params.id;
+
+    let nome = req.body.nome;
+    let email = req.body.email;
+    let senha = req.body.senha;
+
+    let senhaHash = await bcrypt.hash(senha, 10)
+
+    db.run(`UPDATE usuarios SET nome = ?, email = ?, senha = ?
+        WHERE id = ?`, [nome, email, senhaHash, idUsuario],
+        function(){
+            res.json({
+                "message" : "Usuário atualizado com sucesso."
+            })
+        })
 })
 
 // Iniciar o server
