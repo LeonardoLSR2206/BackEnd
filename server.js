@@ -1,6 +1,6 @@
 // Importar bibliotecas
 const express = require("express");
-const sqlite3 = require("sqlite3").verbose();
+const sqlite3 = require("sqlite3").verbose();   
 const cors = require("cors");
 const bcrypt = require("bcrypt");
 
@@ -42,12 +42,13 @@ app.post("/usuarios", async (req, res) => {
     // Inserir no banco de dados
     db.run(`INSERT INTO usuarios (nome, email, senha) VALUES (?, ?, ?)`,
         [nome, email, senhaHash],
-
-        res.json({
-            id: this.lastID,
-            nome,
-            email
-        })
+        function() {
+            res.json({
+                id: this.lastID,
+                nome,
+                email
+            })
+        }
     )
 });
 
