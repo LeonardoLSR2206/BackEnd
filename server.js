@@ -99,6 +99,8 @@ app.delete("/usuarios/:id", (req, res) => {
 app.put("/usuarios/:id", async (req, res) => {
     let idUsuario = req.params.id;
 
+    console.log(req.body);
+
     let nome = req.body.nome;
     let email = req.body.email;
     let senha = req.body.senha;
